@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPA Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 70%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="number"],
+        select {
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 45%;
+        }
+
+        .course {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>GPA Calculator</h1>
+
+        <label for="num_courses">Enter number of courses:</label>
+        <input type="number" id="num_courses" name="num_courses">
+
+        <button onclick="addCourses()">Add Courses</button>
+
+        <div id="courses"></div>
+
+        <button onclick="calculateGPA()">Calculate GPA</button>
+    </div>
+
+    <script>
+        function addCourses() {
+            var numCourses = document.getElementById("num_courses").value;
+            var coursesDiv = document.getElementById("courses");
+            coursesDiv.innerHTML = "";
+
+            for (var i = 0; i < numCourses; i++) {
+                var courseDiv = document.createElement("div");
+                courseDiv.classList.add("course");
+
+                var creditInput = document.createElement("input");
+                creditInput.type = "number";
+                creditInput.name = "credit_" + i;
+                creditInput.id = "credit_" + i;
+                creditInput.placeholder = "Credit Hours";
+                courseDiv.appendChild(creditInput);
+
+                var gradeSelect = document.createElement("select");
+                gradeSelect.name = "grade_" + i;
+                gradeSelect.id = "grade_" + i;
+                var grades = ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F'];
+                for (var j = 0; j < grades.length; j++) {
+                    var option = document.createElement("option");
+                    option.value = grades[j];
+                    option.text = grades[j];
+                    gradeSelect.appendChild(option);
+                }
+                courseDiv.appendChild(gradeSelect);
+
+                coursesDiv.appendChild(courseDiv);
+            }
+        }
+
+        function calculateGPA() {
+            var numCourses = document.getElementById("num_courses").value;
+            var totalCreditPoints = 0;
+            var totalCredits = 0;
+
+            for (var i = 0; i < numCourses; i++) {
+                var credit = parseInt(document.getElementById("credit_" + i).value);
+                var grade = document.getElementById("grade_" + i).value;
+
+                var gradePoints = {
+                    'A': 4.0, 'A-': 3.7, 'B+': 3.3, 'B': 3.0, 'B-': 2.7,
+                    'C+': 2.3, 'C': 2.0, 'C-': 1.7, 'D+': 1.3, 'D': 1.0,
+                    'F': 0.0
+                };
+
+                if (grade in gradePoints) {
+                    var creditPoints = gradePoints[grade] * credit;
+                    totalCreditPoints += creditPoints;
+                    totalCredits += credit;
+                }
+            }
+
+            if (totalCredits !== 0) {
+                var gpa = totalCreditPoints / totalCredits;
+                alert("Your GPA is: " + gpa.toFixed(2));
+            } else {
+                alert("Please enter valid data.");
+            }
+        }
+    </script>
+</body>
+</html>
